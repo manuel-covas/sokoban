@@ -18,6 +18,10 @@ import pt.iul.ista.poo.utils.Point2D;
  */
 public interface ImageTile {
 
+	public class PlayerUp {
+
+	}
+
 	/**
 	 * The name of the image. Must correspond to the name of an image file in
 	 * the "images" folder otherwise it will trigger one of the following
