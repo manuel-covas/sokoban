@@ -1,5 +1,7 @@
 package pt.iul.ista.poo.gui;
 
+import pt.iscte.poo.manuelcovas.sokoban.level.Level;
+import pt.iul.ista.poo.utils.Direction;
 import pt.iul.ista.poo.utils.Point2D;
 
 /**
@@ -18,10 +20,7 @@ import pt.iul.ista.poo.utils.Point2D;
  */
 public interface ImageTile {
 
-	public class PlayerUp {
-
-	}
-
+	
 	/**
 	 * The name of the image. Must correspond to the name of an image file in
 	 * the "images" folder otherwise it will trigger one of the following
@@ -49,5 +48,26 @@ public interface ImageTile {
 	 * @return int.
 	 */
 	int getLayer();
+	
+	
+	/**
+	 * Determines whether the player can move on to this tile.
+	 * 
+	 * @param direction Direction in which the player is moving.
+	 * @param tileGrid Level top-layer grid of ImageTiles.
+	 * @param level TODO
+	 * @return Whether the move is allowed.
+	 */
+	boolean playerInteract(Direction direction, ImageTile[][] tileGrid, Level level);
+	
+	
+	/**
+	 * Determines whether and object can move on to this tile.
+	 * @param level TODO
+	 * @param mvoedTile The tile that is moving on to this one.
+	 * 
+	 * @return Whether the move is allowed.
+	 */
+	boolean movableInteract(ImageTile movedTile, Level level);
 
 }

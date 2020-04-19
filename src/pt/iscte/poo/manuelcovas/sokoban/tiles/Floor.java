@@ -1,6 +1,8 @@
 package pt.iscte.poo.manuelcovas.sokoban.tiles;
 
+import pt.iscte.poo.manuelcovas.sokoban.level.Level;
 import pt.iul.ista.poo.gui.ImageTile;
+import pt.iul.ista.poo.utils.Direction;
 import pt.iul.ista.poo.utils.Point2D;
 
 public class Floor implements ImageTile {
@@ -29,4 +31,14 @@ public class Floor implements ImageTile {
 		return layer;
 	}
 
+	
+	@Override
+	public boolean playerInteract(Direction direction, ImageTile[][] tileGrid, Level level){  // Floor can always be moved on.
+		return true;
+	}
+	
+	@Override
+	public boolean movableInteract(ImageTile movedTile, Level level) {  // Anything can be pushed on to the floor.
+		return true;
+	}
 }

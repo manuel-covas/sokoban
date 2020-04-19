@@ -4,8 +4,8 @@ O#XX X   #
 O# #     #
 O#C  #####
 O#  C    #
-O# C     #
-O#  E    #
+O# C   p #
+O#  E  O #
 O#########
 OOOOOOOOOO
 
