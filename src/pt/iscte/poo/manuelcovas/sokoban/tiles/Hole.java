@@ -1,23 +1,23 @@
 package pt.iscte.poo.manuelcovas.sokoban.tiles;
 
+import java.util.ArrayList;
+
 import pt.iscte.poo.manuelcovas.sokoban.level.Level;
 import pt.iul.ista.poo.gui.ImageMatrixGUI;
-import pt.iul.ista.poo.gui.ImageTile;
 import pt.iul.ista.poo.utils.Direction;
-import pt.iul.ista.poo.utils.Point2D;
+
 
 @SuppressWarnings("rawtypes")
-public class Hole implements ImageTile {
-
+public class Hole extends GameTile {
+	
 	private static final Class[] consumesMovables = {SmallStone.class, BigStone.class, Box.class};
 	private static final Class[] isFiledBy = {BigStone.class};
 	
 	private boolean full = false;
 	private static int layer = 1;
-	private Point2D position;
 	
 	public Hole(int x, int y) {
-		position = new Point2D(x, y);
+		super(x, y, layer, null);
 	}
 	
 	
@@ -25,20 +25,9 @@ public class Hole implements ImageTile {
 	public String getName() {
 		return full ? "BuracoCheio" : "Buraco";
 	}
-
-	@Override
-	public Point2D getPosition() {
-		return position;
-	}
-
-	@Override
-	public int getLayer() {
-		return layer;
-	}
 	
 	
-	@Override
-	public boolean playerInteract(Direction direction, ImageTile[][] tileGrid, Level level){  // Holes can be moved in to.
+	public boolean playerInteract(Direction direction, ArrayList<GameTile> tileGrid, Level level){  // Holes can be moved in to.
 		if (full)
 			return true;
 		
@@ -49,8 +38,7 @@ public class Hole implements ImageTile {
 		return true;
 	}
 	
-	@Override
-	public boolean movableInteract(ImageTile movedTile, Level level) {  // Anything can be pushed in to a Hole and will be consumed if present in the
+	public boolean movableInteract(GameTile movedTile, Level level) {	// Anything can be pushed in to a Hole and will be consumed if present in the
 		if (!full) {													// consumesMovables array, filling the Hole if present in the isFilledBy array.
 			for (int i = 0; i < consumesMovables.length; i++) {
 				if (movedTile.getClass().isAssignableFrom(consumesMovables[i])) {

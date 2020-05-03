@@ -2,13 +2,11 @@ package pt.iscte.poo.manuelcovas.sokoban;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
-
 import javax.swing.JOptionPane;
-
 import pt.iscte.poo.manuelcovas.sokoban.level.Level;
+import pt.iscte.poo.manuelcovas.sokoban.tiles.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.tiles.Player;
 import pt.iul.ista.poo.gui.ImageMatrixGUI;
-import pt.iul.ista.poo.gui.ImageTile;
 import pt.iul.ista.poo.observer.Observed;
 import pt.iul.ista.poo.observer.Observer;
 import pt.iul.ista.poo.utils.Direction;
@@ -20,10 +18,9 @@ public class SokobanGameSP implements Observer {
 	
 	private ArrayList<Level> levels;
 	private Level level;
-	private int[] levelDimensions;
 	private int levelIndex;
 	
-	private ImageTile[][] tileGrid;
+	private ArrayList<GameTile> tileGrid;
 	private ImageMatrixGUI gui;
 	
 	
@@ -36,9 +33,7 @@ public class SokobanGameSP implements Observer {
 	
 	
 	private void init() {
-		levelDimensions = level.getDimensions();
-		
-		ImageMatrixGUI.setSize(levelDimensions[0], levelDimensions[1]);
+		ImageMatrixGUI.setSize(level.getWidth(), level.getHeight());
 		refreshTileGrid();
 		
 		gui = ImageMatrixGUI.getInstance();
@@ -82,6 +77,7 @@ public class SokobanGameSP implements Observer {
 		gui.update();
 		
 		
+		
 		if (player.getEnergy() == 0) {
 			level.setLost("No more energy available!");
 		}
@@ -94,18 +90,23 @@ public class SokobanGameSP implements Observer {
 	
 	
 	private void refreshTileGrid() {
-		tileGrid = new ImageTile[levelDimensions[1]][levelDimensions[0]];
-		level.getTiles().forEach(new Consumer<ImageTile>() {
+		tileGrid = new ArrayList<GameTile>(level.getWidth()*level.getHeight());
+		
+		for (int i = 0; i < level.getWidth()*level.getHeight(); i++) {
+			tileGrid.add(null);
+		}
+
+		level.getTiles().forEach(new Consumer<GameTile>() {
 			@Override
-			public void accept(ImageTile tile) {
+			public void accept(GameTile tile) {
 				
 				Point2D position = tile.getPosition();
-				int x = position.getX(), y = position.getY();
+				int index = position.getY()*level.getWidth() + position.getX();
 				
-				ImageTile current = tileGrid[y][x];
+				GameTile current = tileGrid.get(index);
 				
 				if (current == null || current.getLayer() < tile.getLayer())
-					tileGrid[y][x] = tile;
+					tileGrid.set(index, tile);
 			}
 		});
 	}

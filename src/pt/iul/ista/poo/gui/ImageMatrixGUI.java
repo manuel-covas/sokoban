@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import pt.iscte.poo.manuelcovas.sokoban.tiles.GameTile;
 import pt.iul.ista.poo.observer.Observed;
 import pt.iul.ista.poo.utils.Point2D;
 
@@ -220,18 +221,18 @@ public class ImageMatrixGUI extends Observed {
     /**
      * Add a new set of images to the main window.
      *
-     * @param newImages images to be added to main window
+     * @param arrayList images to be added to main window
      * @throws IllegalArgumentException if no image with that name (and a suitable extension) is
      *                                  found the images folder
      */
 
-    public void addImages(final List<ImageTile> newImages) {
+    public void addImages(final ArrayList<GameTile> arrayList) {
         synchronized (images) { // Added 16-Mar-2016
-            if (newImages == null)
+            if (arrayList == null)
                 throw new IllegalArgumentException("Null list");
-            if (newImages.size() == 0)
+            if (arrayList.size() == 0)
                 return;
-            for (ImageTile i : newImages) {
+            for (ImageTile i : arrayList) {
                 if (i == null)
                     throw new IllegalArgumentException("Null image");
                 if (!imageDB.containsKey(i.getName())) {

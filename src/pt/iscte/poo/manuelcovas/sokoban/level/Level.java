@@ -2,9 +2,11 @@ package pt.iscte.poo.manuelcovas.sokoban.level;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import pt.iscte.poo.manuelcovas.sokoban.tiles.*;
 import pt.iul.ista.poo.gui.ImageTile;
+import pt.iul.ista.poo.utils.Point2D;
 
 
 public class Level {
@@ -17,7 +19,7 @@ public class Level {
 	private String lossCause = "";
 	
 	private Player player;
-	private ArrayList<ImageTile> tiles = new ArrayList<ImageTile>();
+	private ArrayList<GameTile> tiles = new ArrayList<GameTile>();
 	
 	
 	public Level(File file) throws Exception {  // Setup scanner and attempt to parse level
@@ -25,7 +27,6 @@ public class Level {
 		
 		Scanner scanner = new Scanner(file);
 		int y = 0;
-		
 		while (scanner.hasNext()) {
 			String line = scanner.nextLine();
 			width = (line.length() > width) ? line.length() : width;
@@ -86,8 +87,11 @@ public class Level {
 		return name;
 	}
 	
-	public int[] getDimensions() {
-		return new int[] {width, height};
+	public int getWidth() {
+		return width;
+	}
+	public int getHeight() {
+		return height;
 	}
 	
 	public Player getPlayer() {
@@ -95,7 +99,7 @@ public class Level {
 	}
 	
 	
-	public ArrayList<ImageTile> getTiles() {
+	public ArrayList<GameTile> getTiles() {
 		return tiles;
 	}
 	
