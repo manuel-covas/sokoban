@@ -2,11 +2,11 @@ package pt.iscte.poo.manuelcovas.sokoban.level;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
+
+import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.tiles.*;
 import pt.iul.ista.poo.gui.ImageTile;
-import pt.iul.ista.poo.utils.Point2D;
 
 
 public class Level {
@@ -15,6 +15,7 @@ public class Level {
 	private int width = 0;
 	private int height = 0;
 	
+	public ArrayList<Target> targets = new ArrayList<Target>();
 	private boolean lost = false;
 	private String lossCause = "";
 	
@@ -66,7 +67,9 @@ public class Level {
 					break;
 					
 					case 'X':
-						tiles.add(new Target(x, y));
+						Target target = new Target(x, y);
+						tiles.add(target);
+						targets.add(target);
 					break;
 					
 					case ' ':

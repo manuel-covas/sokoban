@@ -19,7 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import pt.iscte.poo.manuelcovas.sokoban.tiles.GameTile;
+import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iul.ista.poo.observer.Observed;
 import pt.iul.ista.poo.utils.Point2D;
 

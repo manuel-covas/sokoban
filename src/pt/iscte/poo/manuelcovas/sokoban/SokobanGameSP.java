@@ -3,8 +3,8 @@ package pt.iscte.poo.manuelcovas.sokoban;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import javax.swing.JOptionPane;
+
 import pt.iscte.poo.manuelcovas.sokoban.level.Level;
-import pt.iscte.poo.manuelcovas.sokoban.tiles.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.tiles.Player;
 import pt.iul.ista.poo.gui.ImageMatrixGUI;
 import pt.iul.ista.poo.observer.Observed;
@@ -16,18 +16,16 @@ public class SokobanGameSP implements Observer {
 	
 	private static final int KEY_UP = 38, KEY_DOWN = 40, KEY_RIGHT = 39, KEY_LEFT = 37;
 	
-	private ArrayList<Level> levels;
-	private Level level;
 	private int levelIndex;
-	
+	private Level level;
+	private ArrayList<Level> levels;
 	private ArrayList<GameTile> tileGrid;
 	private ImageMatrixGUI gui;
 	
-	
-	public SokobanGameSP(int i, ArrayList<Level> l) {
-		this.levelIndex = i;
-		this.level = l.get(0);
-		this.levels = l;
+	public SokobanGameSP(int i, ArrayList<Level> levels) {
+		levelIndex = i;
+		this.levels = levels;
+		level = levels.get(levelIndex);
 		init();
 	}
 	
@@ -45,7 +43,6 @@ public class SokobanGameSP implements Observer {
 	}
 	
 
-	@Override
 	public void update(Observed source) {
 		
 		int pressedKey = gui.keyPressed();
@@ -73,10 +70,35 @@ public class SokobanGameSP implements Observer {
 		player.move(newDirection, tileGrid, gui, level);
 		
 		refreshTileGrid();
-		gui.setStatusMessage("Energy: "+player.getEnergy());
+		gui.setStatusMessage("Moves: "+player.getMoves()+" Energy: "+player.getEnergy());
 		gui.update();
 		
+		if (checkWin()) {
+			JOptionPane.showMessageDialog(null, "Level completed.", "Sokoban", JOptionPane.INFORMATION_MESSAGE);
+			
+			if (levelIndex == (levels.size() - 1)) {
+				JOptionPane.showMessageDialog(null, "No more levels.", "Sokoban", JOptionPane.INFORMATION_MESSAGE);
+				System.exit(0);
+				return;
+			}
+			gui.unregisterObserver(this);
+			gui.clearImages();
+			gui.update();
+			new SokobanGameSP(levelIndex + 1, levels);
+		}
 		
+		checkLoss(player);
+	}
+	
+	
+	boolean checkWin() {
+		for (int i = 0; i < level.targets.size(); i++) {
+			if (!level.targets.get(i).full)
+				return false; 
+		}
+		return true;
+	}
+	void checkLoss(Player player) {
 		
 		if (player.getEnergy() == 0) {
 			level.setLost("No more energy available!");

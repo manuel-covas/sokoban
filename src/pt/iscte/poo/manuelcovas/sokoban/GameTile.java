@@ -1,4 +1,4 @@
-package pt.iscte.poo.manuelcovas.sokoban.tiles;
+package pt.iscte.poo.manuelcovas.sokoban;
 
 import java.util.ArrayList;
 

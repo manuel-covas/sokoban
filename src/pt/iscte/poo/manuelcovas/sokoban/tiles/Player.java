@@ -1,7 +1,9 @@
 package pt.iscte.poo.manuelcovas.sokoban.tiles;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
+import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.level.Level;
 import pt.iul.ista.poo.gui.ImageMatrixGUI;
 import pt.iul.ista.poo.utils.Direction;
@@ -12,12 +14,17 @@ public class Player extends GameTile {
 	private static int layer = 3;
 	private Direction direction;
 	private int energy = 100;
+	private int moves = 0;
 	
 	public Player(int x, int y) {
 		super(x, y, layer, null);
 		direction = Direction.UP;
 	}
 	
+	
+	public int getMoves() {
+		return moves;
+	}
 	
 	public int getEnergy() {
 		return energy;
@@ -40,6 +47,16 @@ public class Player extends GameTile {
 			if (interactedTile != null && interactedTile.playerInteract(newDirection, tileGrid, level)) {
 				super.setPosition(moveCandidate);
 				energy--;
+				moves++;
+				
+				level.targets.forEach(new Consumer<Target>() {
+					@Override
+					public void accept(Target target) {
+						if (target.getPosition().equals(moveCandidate)) {
+							target.full = false;
+						}
+					}
+				});
 			}
 		}
 	}
