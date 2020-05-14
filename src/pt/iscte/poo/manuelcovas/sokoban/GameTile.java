@@ -1,13 +1,9 @@
 package pt.iscte.poo.manuelcovas.sokoban;
 
-import java.util.ArrayList;
-
-import pt.iscte.poo.manuelcovas.sokoban.level.Level;
 import pt.iul.ista.poo.gui.ImageTile;
-import pt.iul.ista.poo.utils.Direction;
 import pt.iul.ista.poo.utils.Point2D;
 
-public abstract class GameTile implements ImageTile {
+public class GameTile implements ImageTile {
 	
 	private Point2D position;
 	private int layer;
@@ -23,6 +19,7 @@ public abstract class GameTile implements ImageTile {
 	public String getName() {
 		return name;
 	}
+
 	
 	public Point2D getPosition() {
 		return position;
@@ -32,14 +29,8 @@ public abstract class GameTile implements ImageTile {
 		position = point;
 	}
 	
+	
 	public int getLayer() {
 		return layer;
 	}
-	
-	
-	// To be implemented by each game tile child
-	abstract public boolean playerInteract(Direction direction, ArrayList<GameTile> tileGrid, Level level);
-	
-	// To be implemented by each game tile child
-	abstract public boolean movableInteract(GameTile movedTile, Level level);
 }

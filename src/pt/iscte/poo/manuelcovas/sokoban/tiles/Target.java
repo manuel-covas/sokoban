@@ -1,12 +1,10 @@
- package pt.iscte.poo.manuelcovas.sokoban.tiles;
-
-import java.util.ArrayList;
+package pt.iscte.poo.manuelcovas.sokoban.tiles;
 
 import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.level.Level;
-import pt.iul.ista.poo.utils.Direction;
 
-public class Target extends GameTile {
+
+public class Target extends GameTile implements TraversableTile {
 
 	private static String name = "Alvo";
 	private static int layer = 1;
@@ -17,13 +15,12 @@ public class Target extends GameTile {
 	}
 	
 	
-	public boolean playerInteract(Direction direction, ArrayList<GameTile> tileGrid, Level level){  // Targets can be moved on.
-		return true;
-	}
-	
-	public boolean movableInteract(GameTile movedTile, Level level) {  // Anything can be pushed on to a Target
-		if (movedTile.getName().equalsIgnoreCase("Caixote"))
+	@Override
+	public void traverse(GameTile movedTile, Level level) {
+		if (movedTile.getName().equalsIgnoreCase("Caixote")) {
 			full = true;
-		return true;
+		}else{
+			full = false;
+		}
 	}
 }

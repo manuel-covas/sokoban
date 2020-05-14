@@ -21,47 +21,6 @@ public class Player extends GameTile {
 		direction = Direction.UP;
 	}
 	
-	
-	public int getMoves() {
-		return moves;
-	}
-	
-	public int getEnergy() {
-		return energy;
-	}
-	
-	public void restoreEnergy() {
-		energy = 100;
-	}
-	
-	public void move(Direction newDirection, ArrayList<GameTile> tileGrid, ImageMatrixGUI gui, Level level) {
-		direction = newDirection;
-		
-		Point2D position = super.getPosition();
-		Point2D moveCandidate = position.plus(direction.asVector());
-		
-		if (gui.isWithinBounds(moveCandidate)) {
-			
-			GameTile interactedTile = tileGrid.get(moveCandidate.getY()*level.getWidth() + moveCandidate.getX());
-			
-			if (interactedTile != null && interactedTile.playerInteract(newDirection, tileGrid, level)) {
-				super.setPosition(moveCandidate);
-				energy--;
-				moves++;
-				
-				level.targets.forEach(new Consumer<Target>() {
-					@Override
-					public void accept(Target target) {
-						if (target.getPosition().equals(moveCandidate)) {
-							target.full = false;
-						}
-					}
-				});
-			}
-		}
-	}
-	
-	
 	@Override
 	public String getName() {
 		switch (direction) {
@@ -77,13 +36,66 @@ public class Player extends GameTile {
 				return "Empilhadora_U";
 		}
 	}
-
 	
-	public boolean playerInteract(Direction direction, ArrayList<GameTile> tileGrid, Level level) {  // Players can not be moved.
-		return false;
+	
+	public int getMoves() {
+		return moves;
 	}
 	
-	public boolean movableInteract(GameTile movedTile, Level level) {  // Nothing can be pushed on to a Player
-		return false;
+	public int getEnergy() {
+		return energy;
+	}
+	
+	public void restoreEnergy() {
+		energy = 100;
+	}
+	
+	
+	public void move(Direction newDirection, ArrayList<GameTile> tileGrid, ImageMatrixGUI gui, Level level) {
+		direction = newDirection;
+		
+		Point2D position = super.getPosition();
+		Point2D moveCandidate = position.plus(direction.asVector());
+		
+		if (gui.isWithinBounds(moveCandidate)) {
+			GameTile interactedTile = tileGrid.get(moveCandidate.getY()*level.getWidth() + moveCandidate.getX());
+			
+			if (interactedTile == null)
+				return;
+			
+			if (interactedTile instanceof TraversableTile)
+			{
+				((TraversableTile) interactedTile).traverse(this, level);
+			}
+			else if (interactedTile instanceof PushableTile)
+			{
+				if (!((PushableTile) interactedTile).push(direction, tileGrid, level))
+					return;
+			}
+			else if (interactedTile instanceof ConsumableTile)
+			{
+				((ConsumableTile) interactedTile).consume(level);
+			}
+			else { return; }
+			
+			updateAffectedTarget(level, moveCandidate);
+			super.setPosition(moveCandidate);
+			
+			energy--;
+			moves++;
+			return;
+		}
+	}
+	
+	
+	private void updateAffectedTarget(Level level, Point2D movedOnTo) {
+		level.targets.forEach(new Consumer<Target>() {
+			@Override
+			public void accept(Target target) {
+				if (target.getPosition().equals(movedOnTo)) {
+					target.full = false;
+				}
+			}
+		});
 	}
 }
