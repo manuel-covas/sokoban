@@ -1,11 +1,8 @@
-OOOOOOOOOO
+##########
+  XX X    
+O# #      
+ #C  #####
+ #  C    #
+ # C   p #
+ #  E  O #
 O#########
-O#XX X   #
-O# #     #
-O#C  #####
-O#  C    #
-O# C   p #
-O#  E  O #
-O#########
-OOOOOOOOOO
-

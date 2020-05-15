@@ -13,6 +13,7 @@ public class Player extends GameTile {
 	
 	private static int layer = 3;
 	private Direction direction;
+	private boolean hasHammer = false;
 	private int energy = 100;
 	private int moves = 0;
 	
@@ -50,22 +51,37 @@ public class Player extends GameTile {
 		energy = 100;
 	}
 	
+	public void giveHammer() {
+		hasHammer = true;
+	}
 	
+	
+	private boolean teleporting = false;
 	public void move(Direction newDirection, ArrayList<GameTile> tileGrid, ImageMatrixGUI gui, Level level) {
 		direction = newDirection;
 		
 		Point2D position = super.getPosition();
 		Point2D moveCandidate = position.plus(direction.asVector());
 		
-		if (gui.isWithinBounds(moveCandidate)) {
+		if (level.isInBounds(moveCandidate)) {
 			GameTile interactedTile = tileGrid.get(moveCandidate.getY()*level.getWidth() + moveCandidate.getX());
 			
 			if (interactedTile == null)
 				return;
 			
+			if (hasHammer && interactedTile instanceof Wall) {
+				checkBreakableWall(interactedTile, level);
+				return;
+			}
+			
+			
 			if (interactedTile instanceof TraversableTile)
 			{
-				((TraversableTile) interactedTile).traverse(this, level);
+				((TraversableTile) interactedTile).traverse(this, direction, tileGrid, level);
+				
+				if (interactedTile instanceof Portal)
+					teleporting = true;
+					
 			}
 			else if (interactedTile instanceof PushableTile)
 			{
@@ -78,12 +94,28 @@ public class Player extends GameTile {
 			}
 			else { return; }
 			
+			
 			updateAffectedTarget(level, moveCandidate);
-			super.setPosition(moveCandidate);
+			
+			if (!teleporting) {
+				super.setPosition(moveCandidate);
+				checkPortal(this, direction, tileGrid, level);
+			}
+			teleporting = false;
 			
 			energy--;
 			moves++;
 			return;
+		}
+	}
+	
+	
+	private void checkBreakableWall(GameTile wallTile, Level level) {
+		Wall wall = (Wall) wallTile;
+		
+		if (wall.isBreakable()) {
+			ImageMatrixGUI.getInstance().removeImage(wall);
+			level.removeTile(wall);
 		}
 	}
 	
@@ -95,6 +127,17 @@ public class Player extends GameTile {
 				if (target.getPosition().equals(movedOnTo)) {
 					target.full = false;
 				}
+			}
+		});
+	}
+	
+	
+	private void checkPortal(Player player, Direction movingDirection, ArrayList<GameTile> tileGrid, Level level) {
+		level.portals.forEach(new Consumer<Portal>() {
+			@Override
+			public void accept(Portal portal) {
+				if (player.getPosition().equals(portal.getPosition()))
+					portal.traverse(level.getPlayer(), movingDirection, tileGrid, level);
 			}
 		});
 	}

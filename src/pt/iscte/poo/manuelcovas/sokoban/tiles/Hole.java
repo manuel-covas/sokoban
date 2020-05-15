@@ -1,8 +1,11 @@
 package pt.iscte.poo.manuelcovas.sokoban.tiles;
 
+import java.util.ArrayList;
+
 import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.level.Level;
 import pt.iul.ista.poo.gui.ImageMatrixGUI;
+import pt.iul.ista.poo.utils.Direction;
 
 
 @SuppressWarnings("rawtypes")
@@ -26,7 +29,7 @@ public class Hole extends GameTile implements TraversableTile {
 
 
 	@Override
-	public void traverse(GameTile movedTile, Level level) {    // Anything can be pushed in to a Hole and will be consumed if present in the
+	public void traverse(GameTile movedTile, Direction movingDirection, ArrayList<GameTile> tileGrid, Level level) {    // Anything can be pushed in to a Hole and will be consumed if present in the
 		if (full)											   // consumesMovables array, filling the Hole if present in the isFilledBy array.
 			return;
 		

@@ -63,4 +63,34 @@ public class Menu {
 		
 		new SokobanGameSP(0, levels);
 	}
+	
+	
+	public static void scoreboard() {
+		Object[] options = (Object[]) new String[] {"Local", "Online"};
+		int choice = JOptionPane.showOptionDialog(null, new JLabel("Singleplayer", JLabel.CENTER), Main.WINDOW_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		
+		switch (choice) {
+		case 0:
+			try {
+				Scoreboard.localScoreboard();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Couldn't load local scoreboard:\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			break;
+
+		case 1:
+			try {
+				//LevelLoader.selectLevels(levels, failures);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Couldn't load remote scoreboard:\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			break;
+		
+		default:
+			System.exit(0);
+			return;
+		}
+	}
 }

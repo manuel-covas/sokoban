@@ -3,19 +3,24 @@ package pt.iscte.poo.manuelcovas.sokoban.level;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.zip.CRC32;
 
 import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.tiles.*;
 import pt.iul.ista.poo.gui.ImageTile;
+import pt.iul.ista.poo.utils.Point2D;
 
 
 public class Level {
 	
-	private String name;
+	private String name, hash;
+	public int scoreMoves;
 	private int width = 0;
 	private int height = 0;
 	
 	public ArrayList<Target> targets = new ArrayList<Target>();
+	public ArrayList<Portal> portals = new ArrayList<Portal>();
+	
 	private boolean lost = false;
 	private String lossCause = "";
 	
@@ -26,17 +31,37 @@ public class Level {
 	public Level(File file) throws Exception {  // Setup scanner and attempt to parse level
 		name = file.getName();
 		
+		String contents = "";
 		Scanner scanner = new Scanner(file);
 		int y = 0;
 		while (scanner.hasNext()) {
 			String line = scanner.nextLine();
+			contents = contents + line;
 			width = (line.length() > width) ? line.length() : width;
 			
 			for (int x = 0; x < line.length(); x++) {
 				switch (line.charAt(x))
 				{
 					case '#':
-						tiles.add(new Wall(x, y));
+						tiles.add(new Wall(x, y, false));
+					break;
+					
+					case '%':
+						tiles.add(new Wall(x, y, true));
+					break;
+					
+					case 'g':
+						tiles.add(new Ice(x, y));
+					break;
+					
+					case 'm':
+						tiles.add(new Hammer(x, y));
+					break;
+					
+					case 't':
+						Portal newPortal = new Portal(x, y, portals.isEmpty() ? null : portals.get(0));
+						tiles.add(newPortal);
+						portals.add(newPortal);
 					break;
 					
 					case 'b':
@@ -83,11 +108,19 @@ public class Level {
 		}
 		scanner.close();
 		height = y;
+		
+		CRC32 crc32 = new CRC32();  // Non secure hash, used for easy level comparison.
+		crc32.update(contents.getBytes());
+		hash = Long.toHexString(crc32.getValue());
 	}
 	
 	
 	public String getName() {
 		return name;
+	}
+	
+	public String getHash() {
+		return hash;
 	}
 	
 	public int getWidth() {
@@ -123,7 +156,8 @@ public class Level {
 	}
 	
 	
-	public boolean isFinished() {
-		return false;
+	public boolean isInBounds(Point2D location) {
+		int x = location.getX(), y = location.getY();
+		return x >= 0 && x < width  &&  y >= 0 && y < height;
 	}
 }

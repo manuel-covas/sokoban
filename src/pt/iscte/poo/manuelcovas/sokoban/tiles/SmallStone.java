@@ -21,11 +21,15 @@ public class SmallStone extends GameTile implements PushableTile {
 	public boolean push(Direction direction, ArrayList<GameTile> tileGrid, Level level) {
 		Point2D position = super.getPosition();
 		Point2D candidatePosition = position.plus(direction.asVector());
+		
+		if (!level.isInBounds(candidatePosition))
+			return false;
+		
 		GameTile movingOnTo = tileGrid.get(candidatePosition.getY() * level.getWidth() + candidatePosition.getX());
 		
 		if (movingOnTo instanceof TraversableTile) {
-			((TraversableTile) movingOnTo).traverse(this, level);
 			super.setPosition(candidatePosition);
+			((TraversableTile) movingOnTo).traverse(this, direction, tileGrid, level);
 			return true;
 		}else{
 			return false;

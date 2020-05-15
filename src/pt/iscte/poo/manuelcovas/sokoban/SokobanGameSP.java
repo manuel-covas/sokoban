@@ -36,7 +36,7 @@ public class SokobanGameSP implements Observer {
 		
 		gui = ImageMatrixGUI.getInstance();
 		gui.addImages(level.getTiles());
-		gui.setName(level.getName());
+		gui.setName(level.getName() + " ("+level.getHash()+")");
 		gui.setStatusMessage("Move to begin.");
 		gui.registerObserver(this);
 		gui.go();
@@ -44,7 +44,6 @@ public class SokobanGameSP implements Observer {
 	
 
 	public void update(Observed source) {
-		
 		int pressedKey = gui.keyPressed();
 		Direction newDirection;
 		
@@ -74,11 +73,20 @@ public class SokobanGameSP implements Observer {
 		gui.update();
 		
 		if (checkWin()) {
+			level.scoreMoves = player.getMoves();
 			JOptionPane.showMessageDialog(null, "Level completed.", "Sokoban", JOptionPane.INFORMATION_MESSAGE);
 			
 			if (levelIndex == (levels.size() - 1)) {
 				JOptionPane.showMessageDialog(null, "No more levels.", "Sokoban", JOptionPane.INFORMATION_MESSAGE);
-				System.exit(0);
+				
+				String name = null;
+				while (name == null) {
+					try { name = JOptionPane.showInputDialog("What's your name?").replaceAll(":", "").replaceAll("\n", ""); } catch (Exception e) {}
+				}
+					
+				Scoreboard.saveScores(levels, name);
+				gui.dispose();
+				Main.main(null);
 				return;
 			}
 			gui.unregisterObserver(this);

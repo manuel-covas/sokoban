@@ -1,7 +1,10 @@
 package pt.iscte.poo.manuelcovas.sokoban.tiles;
 
+import java.util.ArrayList;
+
 import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.level.Level;
+import pt.iul.ista.poo.utils.Direction;
 
 
 public class Target extends GameTile implements TraversableTile {
@@ -16,7 +19,7 @@ public class Target extends GameTile implements TraversableTile {
 	
 	
 	@Override
-	public void traverse(GameTile movedTile, Level level) {
+	public void traverse(GameTile movedTile, Direction movingDirection, ArrayList<GameTile> tileGrid, Level level) {
 		if (movedTile.getName().equalsIgnoreCase("Caixote")) {
 			full = true;
 		}else{
