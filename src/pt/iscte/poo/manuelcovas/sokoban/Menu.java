@@ -66,8 +66,8 @@ public class Menu {
 	
 	
 	public static void scoreboard() {
-		Object[] options = (Object[]) new String[] {"Local", "Online"};
-		int choice = JOptionPane.showOptionDialog(null, new JLabel("Singleplayer", JLabel.CENTER), Main.WINDOW_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		Object[] options = (Object[]) new String[] {"Local", "Online", "Upload Scores"};
+		int choice = JOptionPane.showOptionDialog(null, new JLabel("Scoreboard", JLabel.CENTER), Main.WINDOW_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
 		
 		switch (choice) {
 		case 0:
@@ -81,7 +81,11 @@ public class Menu {
 
 		case 1:
 			try {
-				//LevelLoader.selectLevels(levels, failures);
+				String remoteHost = null;
+				while (remoteHost == null) {
+					try { remoteHost = JOptionPane.showInputDialog(null, "Where's the host at?", Main.DEFAULT_HOST); } catch (Exception e) {}
+				}
+				Scoreboard.remoteScoreboard(remoteHost);
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "Couldn't load remote scoreboard:\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return;
