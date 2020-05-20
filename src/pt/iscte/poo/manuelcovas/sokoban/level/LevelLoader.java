@@ -50,4 +50,23 @@ public class LevelLoader {
 			}
 		}
 	}
+	
+	public static Level selectLevel() throws Exception {
+		
+		JFileChooser chooser = new JFileChooser(System.getProperty("user.dir"));
+		chooser.setDialogTitle("Select level to load");
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		chooser.setMultiSelectionEnabled(false);
+		
+		int status = chooser.showOpenDialog(null);
+		File file = chooser.getSelectedFile();
+		
+		if (status != JFileChooser.APPROVE_OPTION || file == null) {
+			JOptionPane.showMessageDialog(null, "No levels were selected.\nExiting.", "Error", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+			return null;
+		}
+		
+		return new Level(file);
+	}
 }

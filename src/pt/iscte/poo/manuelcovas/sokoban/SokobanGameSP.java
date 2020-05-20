@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 import pt.iscte.poo.manuelcovas.sokoban.level.Level;
 import pt.iscte.poo.manuelcovas.sokoban.tiles.Player;
 import pt.iul.ista.poo.gui.ImageMatrixGUI;
+import pt.iul.ista.poo.gui.ImageTile;
 import pt.iul.ista.poo.observer.Observed;
 import pt.iul.ista.poo.observer.Observer;
 import pt.iul.ista.poo.utils.Direction;
@@ -126,9 +127,9 @@ public class SokobanGameSP implements Observer {
 			tileGrid.add(null);
 		}
 
-		level.getTiles().forEach(new Consumer<GameTile>() {
+		level.getTiles().forEach(new Consumer<ImageTile>() {
 			@Override
-			public void accept(GameTile tile) {
+			public void accept(ImageTile tile) {
 				
 				Point2D position = tile.getPosition();
 				int index = position.getY()*level.getWidth() + position.getX();
@@ -136,7 +137,7 @@ public class SokobanGameSP implements Observer {
 				GameTile current = tileGrid.get(index);
 				
 				if (current == null || current.getLayer() < tile.getLayer())
-					tileGrid.set(index, tile);
+					tileGrid.set(index, (GameTile) tile);
 			}
 		});
 	}

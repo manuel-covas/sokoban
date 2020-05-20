@@ -18,6 +18,7 @@ public class Main {
 			break;
 
 		case 1:
+			Menu.onlineRace();
 			break;
 			
 		case 2:
@@ -28,10 +29,5 @@ public class Main {
 			System.exit(0);
 			return;
 		}
-	}
-	
-	
-	private static void launchMultiplayer() {
-		
 	}
 }

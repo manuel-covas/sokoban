@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
@@ -35,6 +36,54 @@ public class Scoreboard {
 				} catch (IOException e) {}
 			}
 		});
+	}
+	
+	
+	public static void saveRemoteScores(String host) throws Exception {
+		File[] files;
+		File localScoreboardDir = new File(System.getProperty("user.dir")+File.separator+"highscores");
+		if (!localScoreboardDir.exists())
+			localScoreboardDir.mkdir();
+		
+		StringBuilder payload = new StringBuilder();
+		files = localScoreboardDir.listFiles();
+		
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			
+			payload.append(file.getName());
+			payload.append((char)0x01);	// Level hash delimiter
+			payload.append(new String(Files.readAllBytes(file.toPath())));
+			payload.append((char)0x01);	// Score data delimiter
+		}
+
+		byte[] payloadBytes = Arrays.copyOf(payload.toString().getBytes(), payload.length() + 1);
+		payloadBytes[payload.length()] = 0x00;    // Message terminator;
+		
+		
+		Socket socket = new Socket();
+		socket.connect(new InetSocketAddress(host, Main.HOST_PORT), Main.CONNECTION_TIMEOUT);
+		
+		OutputStream socketOut = socket.getOutputStream();
+		socketOut.write(BackendOperations.UPDATE_SCOREBOARD.getByte());
+		socketOut.write(payloadBytes);
+		
+		InputStream socketIn = socket.getInputStream();
+		StringBuilder responseBuilder = new StringBuilder();
+		
+		while (true) {
+			int incomingByte = socketIn.read();
+			if (incomingByte == -1)
+				break;
+			responseBuilder.append((char) incomingByte);
+		}
+		socket.close();
+		
+		if (responseBuilder.length() == 0) {
+			JOptionPane.showMessageDialog(null, "Couldn't save remote scoreboard:\nReceived an empty response.", "Error", JOptionPane.ERROR_MESSAGE);
+		}else{
+			JOptionPane.showMessageDialog(null, responseBuilder.toString(), "Remote scoreboard", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	
 	
@@ -72,7 +121,6 @@ public class Scoreboard {
 			message = "No scores stored locally.";
 		
 		JOptionPane.showMessageDialog(null, message, "Local scoreboard", JOptionPane.INFORMATION_MESSAGE);
-		Main.main(null);
 	}
 	
 	
@@ -100,6 +148,5 @@ public class Scoreboard {
 		}else{
 			JOptionPane.showMessageDialog(null, payloadBuilder.toString(), "Remote scoreboard", JOptionPane.INFORMATION_MESSAGE);
 		}
-		Main.main(null);
 	}
 }

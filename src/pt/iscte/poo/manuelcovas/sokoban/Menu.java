@@ -65,6 +65,36 @@ public class Menu {
 	}
 	
 	
+	public static void onlineRace() {
+		
+		Object[] options = (Object[]) new String[] {"Create", "Join"};
+		int choice = JOptionPane.showOptionDialog(null, new JLabel("Online Race", JLabel.CENTER), Main.WINDOW_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
+		
+		if (choice == -1) {
+			System.exit(0);
+			return;
+		}
+		
+		try {
+			Level level = null;
+			if (choice == 0)
+				level = LevelLoader.selectLevel();
+			
+			String remoteHost = null;
+			while (remoteHost == null) {
+				try { remoteHost = JOptionPane.showInputDialog(null, "Where's the host at?", Main.DEFAULT_HOST); } catch (Exception e) {}
+			}
+			
+			new SokobanGameMP(level, remoteHost, choice == 0 ? true : false);
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+			return;
+		}
+	}
+	
+	
 	public static void scoreboard() {
 		Object[] options = (Object[]) new String[] {"Local", "Online", "Upload Scores"};
 		int choice = JOptionPane.showOptionDialog(null, new JLabel("Scoreboard", JLabel.CENTER), Main.WINDOW_TITLE, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, null);
@@ -75,8 +105,8 @@ public class Menu {
 				Scoreboard.localScoreboard();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "Couldn't load local scoreboard:\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				return;
 			}
+			Main.main(null);
 			break;
 
 		case 1:
@@ -88,10 +118,23 @@ public class Menu {
 				Scoreboard.remoteScoreboard(remoteHost);
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "Couldn't load remote scoreboard:\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				return;
 			}
+			Main.main(null);
 			break;
 		
+		case 2:
+			try {
+				String remoteHost = null;
+				while (remoteHost == null) {
+					try { remoteHost = JOptionPane.showInputDialog(null, "Where's the host at?", Main.DEFAULT_HOST); } catch (Exception e) {}
+				}
+				Scoreboard.saveRemoteScores(remoteHost);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Couldn't update remote scoreboard:\n"+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			Main.main(null);
+			break;
+			
 		default:
 			System.exit(0);
 			return;

@@ -221,18 +221,18 @@ public class ImageMatrixGUI extends Observed {
     /**
      * Add a new set of images to the main window.
      *
-     * @param arrayList images to be added to main window
+     * @param remoteTileGrid images to be added to main window
      * @throws IllegalArgumentException if no image with that name (and a suitable extension) is
      *                                  found the images folder
      */
 
-    public void addImages(final ArrayList<GameTile> arrayList) {
+    public void addImages(final ArrayList<ImageTile> remoteTileGrid) {
         synchronized (images) { // Added 16-Mar-2016
-            if (arrayList == null)
+            if (remoteTileGrid == null)
                 throw new IllegalArgumentException("Null list");
-            if (arrayList.size() == 0)
+            if (remoteTileGrid.size() == 0)
                 return;
-            for (ImageTile i : arrayList) {
+            for (ImageTile i : remoteTileGrid) {
                 if (i == null)
                     throw new IllegalArgumentException("Null image");
                 if (!imageDB.containsKey(i.getName())) {

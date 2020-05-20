@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.zip.CRC32;
 
-import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iscte.poo.manuelcovas.sokoban.tiles.*;
 import pt.iul.ista.poo.gui.ImageTile;
 import pt.iul.ista.poo.utils.Point2D;
@@ -13,7 +12,7 @@ import pt.iul.ista.poo.utils.Point2D;
 
 public class Level {
 	
-	private String name, hash;
+	private String name, contents = "", hash;
 	public int scoreMoves;
 	private int width = 0;
 	private int height = 0;
@@ -25,18 +24,29 @@ public class Level {
 	private String lossCause = "";
 	
 	private Player player;
-	private ArrayList<GameTile> tiles = new ArrayList<GameTile>();
+	private ArrayList<ImageTile> tiles = new ArrayList<ImageTile>();
 	
 	
 	public Level(File file) throws Exception {  // Setup scanner and attempt to parse level
 		name = file.getName();
 		
-		String contents = "";
 		Scanner scanner = new Scanner(file);
+		parseData(scanner);
+	}
+	
+	public Level(String data, String name) throws Exception {  // Setup scanner and attempt to parse level
+		this.name = name;
+		
+		Scanner scanner = new Scanner(data);
+		parseData(scanner);
+	}
+	
+	
+	private void parseData(Scanner scanner) throws Exception {
 		int y = 0;
 		while (scanner.hasNext()) {
 			String line = scanner.nextLine();
-			contents = contents + line;
+			contents = contents + line + "\n";
 			width = (line.length() > width) ? line.length() : width;
 			
 			for (int x = 0; x < line.length(); x++) {
@@ -119,6 +129,10 @@ public class Level {
 		return name;
 	}
 	
+	public String getContents() {
+		return contents;
+	}
+	
 	public String getHash() {
 		return hash;
 	}
@@ -135,7 +149,7 @@ public class Level {
 	}
 	
 	
-	public ArrayList<GameTile> getTiles() {
+	public ArrayList<ImageTile> getTiles() {
 		return tiles;
 	}
 	
