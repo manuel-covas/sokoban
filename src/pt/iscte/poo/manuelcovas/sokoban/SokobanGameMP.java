@@ -250,7 +250,6 @@ public class SokobanGameMP implements Observer {
 					try {
 						serverSocket.getOutputStream().write(victoryMarker.getBytes());
 						serverSocket.getOutputStream().write(0x01);
-						serverSocket.close();
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(null, "Error sending victory to server: "+e.getMessage()+"\nExiting.", "Error", JOptionPane.ERROR_MESSAGE);
 						System.exit(0);
