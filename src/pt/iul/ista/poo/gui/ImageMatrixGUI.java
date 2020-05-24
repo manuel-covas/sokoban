@@ -19,7 +19,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import pt.iscte.poo.manuelcovas.sokoban.GameTile;
 import pt.iul.ista.poo.observer.Observed;
 import pt.iul.ista.poo.utils.Point2D;
 
@@ -221,18 +220,18 @@ public class ImageMatrixGUI extends Observed {
     /**
      * Add a new set of images to the main window.
      *
-     * @param remoteTileGrid images to be added to main window
+     * @param newImages images to be added to main window
      * @throws IllegalArgumentException if no image with that name (and a suitable extension) is
      *                                  found the images folder
      */
 
-    public void addImages(final ArrayList<ImageTile> remoteTileGrid) {
+    public void addImages(final List<ImageTile> newImages) {
         synchronized (images) { // Added 16-Mar-2016
-            if (remoteTileGrid == null)
+            if (newImages == null)
                 throw new IllegalArgumentException("Null list");
-            if (remoteTileGrid.size() == 0)
+            if (newImages.size() == 0)
                 return;
-            for (ImageTile i : remoteTileGrid) {
+            for (ImageTile i : newImages) {
                 if (i == null)
                     throw new IllegalArgumentException("Null image");
                 if (!imageDB.containsKey(i.getName())) {

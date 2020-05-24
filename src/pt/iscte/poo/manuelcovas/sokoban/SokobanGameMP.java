@@ -83,7 +83,19 @@ public class SokobanGameMP implements Observer {
 								self.init();
 								responseBuilder = new StringBuilder();
 							}
-
+							
+							if (matchCode != null && responseBuilder.indexOf(opponentLeft) != -1) {
+								JOptionPane.showMessageDialog(null, "Opponent left the match.\nExiting.", "Error", JOptionPane.ERROR_MESSAGE);
+								System.exit(0);
+								return;
+							}
+							
+							if (matchCode != null && responseBuilder.indexOf(victoryMarker) != -1) {
+								JOptionPane.showMessageDialog(null, "Opponent finished first!\nMatch over.", "Sokoban", JOptionPane.INFORMATION_MESSAGE);
+								System.exit(0);
+								return;
+							}
+							
 							if (matchCode != null && responseBuilder.indexOf(delimiter) != -1) {
 								if (!matchStarted) {
 									matchStarted = true;
@@ -94,20 +106,6 @@ public class SokobanGameMP implements Observer {
 								
 								refreshRemoteTileGrid(responseBuilder.substring(0, responseBuilder.length()-1));
 								responseBuilder = new StringBuilder();
-							}
-							
-							if (matchCode != null && responseBuilder.indexOf(opponentLeft) != -1) {
-								serverSocket.close();
-								JOptionPane.showMessageDialog(null, "Opponent left the match.\nExiting.", "Error", JOptionPane.ERROR_MESSAGE);
-								System.exit(0);
-								return;
-							}
-							
-							if (matchCode != null && responseBuilder.indexOf(victoryMarker) != -1) {
-								serverSocket.close();
-								JOptionPane.showMessageDialog(null, "Opponent finished first!\nMatch over.", "Error", JOptionPane.INFORMATION_MESSAGE);
-								System.exit(0);
-								return;
 							}
 						}
 						serverSocket.close();
@@ -172,8 +170,7 @@ public class SokobanGameMP implements Observer {
 								}
 								
 								if (responseBuilder.indexOf(victoryMarker) != -1) {
-									serverSocket.close();
-									JOptionPane.showMessageDialog(null, "Opponent finished first!\nMatch over.", "Error", JOptionPane.INFORMATION_MESSAGE);
+									JOptionPane.showMessageDialog(null, "Opponent finished first!\nMatch over.", "Sokoban", JOptionPane.INFORMATION_MESSAGE);
 									System.exit(0);
 									return;
 								}
@@ -244,18 +241,14 @@ public class SokobanGameMP implements Observer {
 		if (checkWin()) {
 			level.scoreMoves = player.getMoves();
 			
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						serverSocket.getOutputStream().write(victoryMarker.getBytes());
-						serverSocket.getOutputStream().write(0x01);
-					} catch (IOException e) {
-						JOptionPane.showMessageDialog(null, "Error sending victory to server: "+e.getMessage()+"\nExiting.", "Error", JOptionPane.ERROR_MESSAGE);
-						System.exit(0);
-					}
-				}
-			}).start();
+			try {
+				serverSocket.getOutputStream().write(victoryMarker.getBytes());
+				serverSocket.getOutputStream().write(0x01);
+				serverSocket.getOutputStream().flush();
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(null, "Error sending victory to server: "+e.getMessage()+"\nExiting.", "Error", JOptionPane.ERROR_MESSAGE);
+				System.exit(0);
+			}
 			
 			JOptionPane.showMessageDialog(null, "You finished first!\nLevel completed.", "Sokoban", JOptionPane.INFORMATION_MESSAGE);
 			System.exit(0);
