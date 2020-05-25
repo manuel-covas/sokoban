@@ -52,7 +52,7 @@ public class Scoreboard {
 			File file = files[i];
 			
 			payload.append(file.getName());
-			payload.append((char)0x01);	// Level hash delimiter
+			payload.append((char)0x01);	// Level checksum delimiter
 			payload.append(new String(Files.readAllBytes(file.toPath())));
 			payload.append((char)0x01);	// Score data delimiter
 		}

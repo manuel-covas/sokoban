@@ -12,7 +12,7 @@ import pt.iul.ista.poo.utils.Point2D;
 
 public class Level {
 	
-	private String name, contents = "", hash;
+	private String name, contents = "", checksum;
 	public int scoreMoves;
 	private int width = 0;
 	private int height = 0;
@@ -119,9 +119,9 @@ public class Level {
 		scanner.close();
 		height = y;
 		
-		CRC32 crc32 = new CRC32();  // Non secure hash, used for easy level comparison.
+		CRC32 crc32 = new CRC32();  // Non secure checksum, used for easy level comparison.
 		crc32.update(contents.getBytes());
-		hash = Long.toHexString(crc32.getValue());
+		checksum = Long.toHexString(crc32.getValue());
 	}
 	
 	
@@ -134,7 +134,7 @@ public class Level {
 	}
 	
 	public String getHash() {
-		return hash;
+		return checksum;
 	}
 	
 	public int getWidth() {
